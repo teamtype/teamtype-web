@@ -52,28 +52,40 @@ fn AdvancedForm() -> Element {
     }
 }
 
+#[derive(Default)]
+struct SimpleFormData {
+    join_code: String
+}
+
+#[derive(Default)]
+struct AdvancedFormData {
+    peer_node_id: String,
+    peer_passphrase: String
+}
+
 #[component]
 pub fn ConnectionForm() -> Element {
     let node_service = use_coroutine_handle::<NodeCommand>();
 
     let mut form_error = use_signal(|| "".to_string());
     let mut mode = use_signal(|| "simple".to_string());
+    let simple_form_data = use_signal(SimpleFormData::default);
+    let advanced_form_data = use_signal(AdvancedFormData::default);
 
     let onsubmit = move |event: FormEvent| {
         event.stop_propagation();
-        let form_data = event.values();
+
         form_error.set("".to_string());
 
         match mode.read().as_str() {
             "simple" => {
-                let join_code = form_data["join_code"].as_value();
+                let join_code = simple_form_data.read().join_code.clone();
                 node_service.send(NodeCommand::ConnectByJoinCode { join_code });
             }
             "advanced" => {
-                match SecretAddress::from_string(
-                    form_data["peer_node_id"].as_value(),
-                    form_data["peer_passphrase"].as_value(),
-                ) {
+                let peer_node_id = advanced_form_data.read().peer_node_id.clone();
+                let peer_passphrase = advanced_form_data.read().peer_passphrase.clone();
+                match SecretAddress::from_string(peer_node_id, peer_passphrase) {
                     Ok(secret_address) => node_service.send(NodeCommand::ConnectByAddress {
                         secret_address: Box::new(secret_address),
                     }),

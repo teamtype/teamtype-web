@@ -4,7 +4,7 @@ use automerge::sync::{Message as AutomergeSyncMessage, State as SyncState, State
 use automerge::{AutoCommit, ChangeHash, ObjId, ReadDoc};
 use chrono::{DateTime, Local};
 use dioxus::hooks::use_coroutine_handle;
-use dioxus::prelude::{Coroutine, GlobalSignal, Readable, Signal};
+use dioxus::prelude::{Coroutine, GlobalSignal, ReadableExt, Signal};
 use futures::channel::mpsc::UnboundedReceiver;
 use futures::StreamExt;
 use std::fmt::Display;
