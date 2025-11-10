@@ -9,7 +9,6 @@
   in {
     devShells.${system}.default = pkgs.mkShell {
       nativeBuildInputs = with pkgs; [
-        cargo-binstall
         dioxus-cli
         wasm-bindgen-cli_0_2_100
       ];
