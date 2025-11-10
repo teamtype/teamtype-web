@@ -16,10 +16,12 @@
       # https://docs.rs/getrandom/0.3.3/getrandom/#webassembly-support
       RUSTFLAGS = "--cfg getrandom_backend=\"wasm_js\"";
 
-      # gcc is default
+      # With gcc (default), the WASM build fails silently
+      # at runtime there is an error message similar to https://github.com/DioxusLabs/dioxus/discussions/3807.
+      # Maybe this can be resolved with dioxus 0.7.0 due to https://github.com/DioxusLabs/dioxus/issues/4023.
       CC_wasm32_unknown_unknown = "${pkgs.llvmPackages.clang-unwrapped}/bin/clang";
 
-      # include path to standard library is missing by default
+      # Include path to standard library is missing by default.
       CFLAGS_wasm32_unknown_unknown = "-I${pkgs.llvmPackages.clang}/resource-root/include/";
     };
   };
