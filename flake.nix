@@ -8,7 +8,7 @@
     pkgs = nixpkgs.legacyPackages.${system};
   in {
     devShells.${system}.default = pkgs.mkShell {
-      nativeBuildInputs = with pkgs; [
+      packages = with pkgs; [
         dioxus-cli
         wasm-bindgen-cli_0_2_100
       ];
