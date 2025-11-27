@@ -62,17 +62,14 @@ pub struct SecretAddress {
 }
 
 impl SecretAddress {
-    pub fn from_string(peer_node_id: String, peer_passphrase: String) -> Result<Self> {
-        if peer_node_id.is_empty() {
-            bail!("peer_node_id is empty!")
+    pub fn from_string(peer_secret_address: String) -> Result<Self> {
+        let parts: Vec<&str> = peer_secret_address.split('#').collect();
+        if parts.len() != 2 {
+            bail!("peer_secret_address does not have the format <node_id>#<passphrase>")
         }
 
-        if peer_passphrase.is_empty() {
-            bail!("peer_passphrase is empty!")
-        }
-
-        let peer_node_id = NodeId::from_str(&peer_node_id)?;
-        let peer_passphrase = SecretKey::from_str(&peer_passphrase)?;
+        let peer_node_id = NodeId::from_str(&parts[0])?;
+        let peer_passphrase = SecretKey::from_str(&parts[1])?;
 
         Ok(Self {
             peer_node_id,
@@ -173,14 +170,8 @@ pub async fn get_secret_address_from_wormhole(code: &str) -> Result<SecretAddres
         MailboxConnection::connect(config, Code::from_str(code)?, false).await?;
     let mut wormhole = Wormhole::connect(mailbox_connection).await?;
     let bytes = wormhole.receive().await?;
-    let fragments: Vec<String> = String::from_utf8(bytes)?
-        .clone()
-        .split("#")
-        .map(|value| value.to_string())
-        .collect();
-    let peer_node_id = fragments[0].to_string();
-    let peer_passphrase = fragments[1].to_string();
-    SecretAddress::from_string(peer_node_id, peer_passphrase)
+    let secret_address = String::from_utf8(bytes)?;
+    SecretAddress::from_string(secret_address)
 }
 
 async fn handle_node_command(

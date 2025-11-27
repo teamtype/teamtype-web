@@ -25,27 +25,14 @@ fn AdvancedForm() -> Element {
     rsx! {
         fieldset {
             label {
-                for: "peer_node_id",
-                "peer node id:"
-            }
-
-            input {
-                id: "peer_node_id",
-                name: "peer_node_id",
-                style: "min-width: 40em;"
-            }
-        }
-
-        fieldset {
-            label {
-                for: "peer_passphrase",
-                "peer passphrase:"
+                for: "peer_secret_address",
+                "peer's secret address:"
             }
 
             // TODO: should this be type: password?
             input {
-                id: "peer_passphrase",
-                name: "peer_passphrase",
+                id: "peer_secret_address",
+                name: "peer_secret_address",
                 style: "min-width: 40em;"
             }
         }
@@ -54,13 +41,12 @@ fn AdvancedForm() -> Element {
 
 #[derive(Default)]
 struct SimpleFormData {
-    join_code: String
+    join_code: String,
 }
 
 #[derive(Default)]
 struct AdvancedFormData {
-    peer_node_id: String,
-    peer_passphrase: String
+    peer_secret_address: String,
 }
 
 #[component]
@@ -83,9 +69,8 @@ pub fn ConnectionForm() -> Element {
                 node_service.send(NodeCommand::ConnectByJoinCode { join_code });
             }
             "advanced" => {
-                let peer_node_id = advanced_form_data.read().peer_node_id.clone();
-                let peer_passphrase = advanced_form_data.read().peer_passphrase.clone();
-                match SecretAddress::from_string(peer_node_id, peer_passphrase) {
+                let peer_secret_address = advanced_form_data.read().peer_secret_address.clone();
+                match SecretAddress::from_string(peer_secret_address) {
                     Ok(secret_address) => node_service.send(NodeCommand::ConnectByAddress {
                         secret_address: Box::new(secret_address),
                     }),
