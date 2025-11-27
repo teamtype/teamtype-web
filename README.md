@@ -15,7 +15,7 @@ This requires the following tools to be installed:
 * [wasm-bindgen](https://rustwasm.github.io/docs/wasm-bindgen/) for compiling Rust to WebAssembly
 * [Clang](https://clang.llvm.org/) for compiling the C dependencies (e.g. [ring](https://github.com/briansmith/ring)) to WebAssembly
 
-There is a Nix flake that can be used to provide the dependencies. It's convenient to automatically activate it using [`direnv`](https://determinate.systems/blog/nix-direnv/).
+There is a Nix flake that can be used to provide the dependencies. It's convenient to automatically activate it using [`direnv`](https://direnv.net). After setting up direnv's shell hooks, put "use flake" into an `.envrc` file, and run `direnv allow`.
 
 ## Deploying
 
